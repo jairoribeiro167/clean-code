@@ -1,13 +1,33 @@
+function inputIsValid(email, password) {
+  return emailIsValid(email) && passwordIsValid(password);
+}
+
+function emailIsValid(email) {
+  return email && email.includes('@');
+}
+
+function passwordIsValid(password) {
+  return password && password.trim() !== '';
+}
+
+function logError(message) {
+  console.log(message);
+}
+
 function createUser(email, password) {
-  if (!email || !email.includes('@') || !password || password.trim() === '') {
-    console.log('Invalid input');
+  if (!inputIsValid(email, password)) {
+    logError('Invalid input');
     return;
   }
 
-  const user = {
-    email,
-    password,
-  };
-
-  database.insert(user);
+  saveUser({ email, password });
 }
+
+function saveUser(user) {
+  if (user) {
+    database.insert(user);
+  }
+}
+
+const user = createUser('user@mail.com', '123456');
+saveUser(user);

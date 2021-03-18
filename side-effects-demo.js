@@ -1,24 +1,50 @@
-function connectDatabase() {
-  const didConnect = database.connect();
-  if (didConnect) {
-    return true;
-  } else {
-    console.log('Could not connect to database!');
-    return false;
+function logError(message) {
+  console.log(message);
+}
+
+function initApp() {
+  const success = connectDatabase();
+
+  if (!success) {
+    logError('Could not connect to database!');
   }
 }
 
+function connectDatabase() {
+  const didConnect = database.connect();
+  return didConnect;
+}
+
+function ticketHasRequestType(ticket) {
+  return ticket.requestType !== 'unknown';
+}
+
 function determineSupportAgent(ticket) {
-  if (ticket.requestType === 'unknown') {
+  if (!ticketHasRequestType(ticket)) {
     return findStandardAgent();
   }
   return findAgentByRequestType(ticket.requestType);
 }
 
-function isValid(email, password) {
-  if (!email.includes('@') || password.length < 7) {
-    console.log('Invalid input!');
-    return false;
+function emailIsValid(email) {
+  return email && email.includes('@');
+}
+
+function passwordIsValid(password) {
+  return password && password >= 7;
+}
+
+function inputIsValid(email, password) {
+  return emailIsValid(email) && passwordIsValid(password);
+}
+
+function createUser(email, password) {
+  if (!isValid(email, password)) {
+    logError('Invalid input');
   }
-  return true;
+  //...
+}
+
+function isValid(email, password) {
+  return emailIsValid(email) && passwordIsValid(password);
 }

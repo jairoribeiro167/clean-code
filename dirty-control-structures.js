@@ -47,6 +47,33 @@ function log(message) {
   console.log(message);
 }
 
+function processTransaction(transaction) {
+  if (transaction.status !== 'OPEN') {
+    logError('Invalid transaction type!');
+    return;
+  }
+
+  if (transaction.type === 'PAYMENT') {
+    if (transaction.method === 'CREDIT_CARD') {
+      processCreditCardPayment(transaction);
+    } else if (transaction.method === 'PAYPAL') {
+      processPayPalPayment(transaction);
+    } else if (transaction.method === 'PLAN') {
+      processPlanPayment(transaction);
+    }
+  } else if (transaction.type === 'REFUND') {
+    if (transaction.method === 'CREDIT_CARD') {
+      processCreditCardRefund(transaction);
+    } else if (transaction.method === 'PAYPAL') {
+      processPayPalRefund(transaction);
+    } else if (transaction.method === 'PLAN') {
+      processPlanRefund(transaction);
+    }
+  } else {
+    logError('Invalid transaction type!', transaction);
+  }
+}
+
 function processTransactions(transactions) {
   if (isEmpty(transactions)) {
     logError('No transactions provided!');
@@ -54,29 +81,7 @@ function processTransactions(transactions) {
   }
 
   for (const transaction of transactions) {
-    if (transaction.status !== 'OPEN') {
-      logError('Invalid transaction type!');
-      continue;
-    }
-    if (transaction.type === 'PAYMENT') {
-      if (transaction.method === 'CREDIT_CARD') {
-        processCreditCardPayment(transaction);
-      } else if (transaction.method === 'PAYPAL') {
-        processPayPalPayment(transaction);
-      } else if (transaction.method === 'PLAN') {
-        processPlanPayment(transaction);
-      }
-    } else if (transaction.type === 'REFUND') {
-      if (transaction.method === 'CREDIT_CARD') {
-        processCreditCardRefund(transaction);
-      } else if (transaction.method === 'PAYPAL') {
-        processPayPalRefund(transaction);
-      } else if (transaction.method === 'PLAN') {
-        processPlanRefund(transaction);
-      }
-    } else {
-      logError('Invalid transaction type!', transaction);
-    }
+    processTransaction(transaction);
   }
 }
 

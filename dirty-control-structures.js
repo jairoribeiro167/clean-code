@@ -39,8 +39,12 @@ function isEmpty(transactions) {
   return !transactions || transactions.length === 0;
 }
 
-function logError(message) {
+function logError(message, item) {
   console.log(message);
+
+  if (item) {
+    console.log(item);
+  }
 }
 
 function log(message) {
@@ -48,30 +52,30 @@ function log(message) {
 }
 
 function processTransaction(transaction) {
-  if (transaction.status !== 'OPEN') {
+  if (!isOpen(transaction)) {
     logError('Invalid transaction type!');
     return;
   }
 
-  if (transaction.type === 'PAYMENT') {
-    if (transaction.method === 'CREDIT_CARD') {
-      processCreditCardPayment(transaction);
-    } else if (transaction.method === 'PAYPAL') {
-      processPayPalPayment(transaction);
-    } else if (transaction.method === 'PLAN') {
-      processPlanPayment(transaction);
-    }
-  } else if (transaction.type === 'REFUND') {
-    if (transaction.method === 'CREDIT_CARD') {
-      processCreditCardRefund(transaction);
-    } else if (transaction.method === 'PAYPAL') {
-      processPayPalRefund(transaction);
-    } else if (transaction.method === 'PLAN') {
-      processPlanRefund(transaction);
-    }
+  if (isPayment(transaction)) {
+    processPayment(transaction);
+  } else if (isRefund(transaction)) {
+    processRefund(transaction);
   } else {
     logError('Invalid transaction type!', transaction);
   }
+}
+
+function isOpen(transaction) {
+  return transaction.status === 'OPEN';
+}
+
+function isPayment(transaction) {
+  return transaction.status === 'PAYMENT';
+}
+
+function isRefund(transaction) {
+  return transaction.status === 'REFUND';
 }
 
 function processTransactions(transactions) {
@@ -82,6 +86,26 @@ function processTransactions(transactions) {
 
   for (const transaction of transactions) {
     processTransaction(transaction);
+  }
+}
+
+function processPayment(paymentTransaction) {
+  if (paymentTransaction.method === 'CREDIT_CARD') {
+    processCreditCardPayment(paymentTransaction);
+  } else if (paymentTransaction.method === 'PAYPAL') {
+    processPayPalPayment(paymentTransaction);
+  } else if (paymentTransaction.method === 'PLAN') {
+    processPlanPayment(paymentTransaction);
+  }
+}
+
+function processRefund(refundTransaction) {
+  if (refundTransaction.method === 'CREDIT_CARD') {
+    processCreditCardRefund(refundTransaction);
+  } else if (refundTransaction.method === 'PAYPAL') {
+    processPayPalRefund(refundTransaction);
+  } else if (refundTransaction.method === 'PLAN') {
+    processPlanRefund(refundTransaction);
   }
 }
 

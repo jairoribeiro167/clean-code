@@ -35,15 +35,27 @@ function main() {
   processTransactions(transactions);
 }
 
+function isEmpty(transactions) {
+  return !transactions || transactions.length === 0;
+}
+
+function logError(message) {
+  console.log(message);
+}
+
+function log(message) {
+  console.log(message);
+}
+
 function processTransactions(transactions) {
-  if (!transactions || transactions.length === 0) {
-    console.log('No transactions provided!');
+  if (isEmpty(transactions)) {
+    logError('No transactions provided!');
     return;
   }
 
   for (const transaction of transactions) {
     if (transaction.status !== 'OPEN') {
-      console.log('Invalid transaction type!');
+      logError('Invalid transaction type!');
       continue;
     }
     if (transaction.type === 'PAYMENT') {
@@ -63,31 +75,31 @@ function processTransactions(transactions) {
         processPlanRefund(transaction);
       }
     } else {
-      console.log('Invalid transaction type!', transaction);
+      logError('Invalid transaction type!', transaction);
     }
   }
 }
 
 function processCreditCardPayment(transaction) {
-  console.log('Processing credit card payment for amount: ' + transaction.amount);
+  log('Processing credit card payment for amount: ' + transaction.amount);
 }
 
 function processCreditCardRefund(transaction) {
-  console.log('Processing credit card refund for amount: ' + transaction.amount);
+  log('Processing credit card refund for amount: ' + transaction.amount);
 }
 
 function processPayPalPayment(transaction) {
-  console.log('Processing PayPal payment for amount: ' + transaction.amount);
+  log('Processing PayPal payment for amount: ' + transaction.amount);
 }
 
 function processPayPalRefund(transaction) {
-  console.log('Processing PayPal refund for amount: ' + transaction.amount);
+  log('Processing PayPal refund for amount: ' + transaction.amount);
 }
 
 function processPlanPayment(transaction) {
-  console.log('Processing plan payment for amount: ' + transaction.amount);
+  log('Processing plan payment for amount: ' + transaction.amount);
 }
 
 function processPlanRefund(transaction) {
-  console.log('Processing plan refund for amount: ' + transaction.amount);
+  log('Processing plan refund for amount: ' + transaction.amount);
 }
